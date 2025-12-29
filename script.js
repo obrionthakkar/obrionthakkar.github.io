@@ -1,8 +1,3 @@
-// Password Protection
-// Password is loaded from password.js (excluded from git)
-// The password.js file sets WEBSITE_PASSWORD as a const
-// If password.js is not loaded, this will remain undefined
-
 // Modal API endpoints
 const MODAL_LOOKUP_URL = 'https://devangthakkar--wedding-rsvp-lookup.modal.run';
 const MODAL_SUBMIT_URL = 'https://devangthakkar--wedding-rsvp-submit-rsvp.modal.run';
@@ -367,63 +362,8 @@ function waitForFonts() {
   return Promise.resolve();
 }
 
-// Password Protection Handler
-function initPasswordProtection() {
-  const passwordOverlay = document.getElementById('passwordOverlay');
-  const passwordForm = document.getElementById('passwordForm');
-  const passwordInput = document.getElementById('passwordInput');
-  const passwordError = document.getElementById('passwordError');
-  const body = document.body;
-
-  if (!passwordOverlay || !passwordForm) return;
-  
-  // Check if password.js was loaded
-  if (typeof WEBSITE_PASSWORD === 'undefined') {
-    console.error('Password file (password.js) not loaded. Please ensure the file exists.');
-    // Allow access if password.js is missing (for development)
-    passwordOverlay.classList.add('hidden');
-    body.style.overflow = '';
-    return;
-  }
-
-  // Check if password was already entered in this session
-  if (sessionStorage.getItem('weddingAccessGranted') === 'true') {
-    passwordOverlay.classList.add('hidden');
-    body.style.overflow = '';
-    return;
-  }
-
-  // Hide body content until password is entered
-  body.style.overflow = 'hidden';
-
-  passwordForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const enteredPassword = passwordInput.value.trim();
-
-    if (enteredPassword === WEBSITE_PASSWORD) {
-      // Correct password
-      sessionStorage.setItem('weddingAccessGranted', 'true');
-      passwordOverlay.classList.add('hidden');
-      body.style.overflow = '';
-      passwordError.textContent = '';
-      passwordInput.value = '';
-    } else {
-      // Wrong password
-      passwordError.textContent = 'Incorrect password. Please try again.';
-      passwordInput.value = '';
-      passwordInput.focus();
-    }
-  });
-
-  // Focus on input when overlay is shown
-  passwordInput.focus();
-}
-
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
-  // Initialize password protection first
-  initPasswordProtection();
-  
   // Any initialization code
   console.log('Wedding website loaded');
   
