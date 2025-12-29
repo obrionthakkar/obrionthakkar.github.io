@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>RSVP Test</title>
+</head>
+<body>
+  <h1>RSVP Test</h1>
+
+  <form id="rsvpForm">
+    <label>
+      Guest ID: <input type="text" id="guestId" value="recPy3wM2REJKRCx4">
+    </label><br>
+    <label>
+      Event ID: <input type="text" id="eventId" value="recsdp2OAZauKrGFf">
+    </label><br>
+    <label>
+      Attending: 
+      <select id="attending">
+        <option value="true">Yes</option>
+        <option value="false">No</option>
+      </select>
+    </label><br>
+    <label>
+      Meal Choice: <select id="mealChoice">
+        <option value="true">Chicken</option>
+        <option value="false">Veg</option>
+        <option value="false">Pork</option>
+      </select>
+    </label><br><br>
+    <button type="submit">Submit RSVP</button>
+  </form>
+
+  <pre id="result"></pre>
+
+  <script>
+    const form = document.getElementById("rsvpForm");
+    const result = document.getElementById("result");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const payload = {
+        guestId: document.getElementById("guestId").value,
+        eventId: document.getElementById("eventId").value,
+        attending: document.getElementById("attending").value === "true",
+        meal_choice: document.getElementById("mealChoice").value
+      };
+
+      try {
+        const res = await fetch("https://devangthakkar--wedding-rsvp-submit-rsvp.modal.run", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+        result.textContent = JSON.stringify(data, null, 2);
+      } catch (err) {
+        result.textContent = "Error: " + err;
+      }
+    });
+  </script>
+</body>
+</html>
