@@ -15,10 +15,10 @@
 
 /* CSS Variables for consistent theming */
 :root {
-  --primary-color: #d4a574;
+  --primary-color: #ed9a42;
   --secondary-color: #8b6f47;
-  --text-dark: #2c2c2c;
-  --text-light: #666;
+  --text-dark: #001489;
+  --text-light: #001489;
   --bg-light: #fafafa;
   --bg-white: #ebf7ff;
   --border-color: #e0e0e0;
@@ -97,13 +97,14 @@ h1, h2, h3 {
 .nav-menu {
   display: flex;
   list-style: none;
-  gap: 2rem;
+  gap: 6rem;
 }
 
 .nav-link {
-  color: var(--text-dark);
+  color: #001489;
   text-decoration: none;
   font-weight: 400;
+  font-size: 1.5rem;
   transition: var(--transition);
   position: relative;
 }
