@@ -70,7 +70,7 @@ h1, h2, h3 {
   position: sticky;
   top: 0;
   width: 100%;
-  background: rgba(255, 255, 255, 0.95);
+  background: transparent;
   backdrop-filter: blur(10px);
   z-index: 1000;
   transition: var(--transition);
@@ -81,8 +81,9 @@ h1, h2, h3 {
   margin: 0 auto;
   padding: 1rem 20px;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
+  position: relative;
 }
 
 .nav-logo {
@@ -133,6 +134,14 @@ h1, h2, h3 {
   border: none;
   cursor: pointer;
   gap: 5px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.nav-toggle.show {
+  opacity: 1;
+  visibility: visible;
 }
 
 .nav-toggle span {
@@ -656,8 +665,20 @@ h1, h2, h3 {
     display: block;
   }
 
+  .navbar {
+    padding: 1.5rem 0;
+  }
+  
+  .nav-container {
+    justify-content: center;
+    padding: 1.5rem 20px;
+  }
+  
   .nav-toggle {
     display: flex;
+    position: absolute;
+    right: 20px;
+    left: auto;
   }
 
   .nav-toggle.active span:nth-child(1) {

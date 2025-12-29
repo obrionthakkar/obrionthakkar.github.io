@@ -47,7 +47,39 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
   });
 });
 
-// Navbar is now sticky and will stay at top when scrolled
+// Navbar scroll behavior - show hamburger on mobile when navbar reaches top (sticky)
+let lastScrollTop = 0;
+window.addEventListener('scroll', () => {
+  const navToggle = document.getElementById('navToggle');
+  if (!navToggle) return;
+  
+  const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+  
+  // Only on mobile
+  if (window.innerWidth <= 768) {
+    // Get the hero section to calculate when navbar reaches top
+    const hero = document.getElementById('home');
+    const navbar = document.getElementById('navbar');
+    
+    if (hero && navbar) {
+      const heroHeight = hero.offsetHeight;
+      const navbarRect = navbar.getBoundingClientRect();
+      
+      // Show hamburger only when navbar is actually at the top (sticky position)
+      // This happens when we've scrolled past the hero section and navbar is at top: 0
+      if (currentScroll >= heroHeight && navbarRect.top <= 0) {
+        navToggle.classList.add('show');
+      } else {
+        navToggle.classList.remove('show');
+      }
+    }
+  } else {
+    // Desktop - always hide (it's hidden via CSS anyway)
+    navToggle.classList.remove('show');
+  }
+  
+  lastScrollTop = currentScroll;
+});
 
 // Name Lookup Form Handler
 lookupForm.addEventListener('submit', async (e) => {
@@ -335,6 +367,12 @@ document.addEventListener('DOMContentLoaded', () => {
   // Any initialization code
   console.log('Wedding website loaded');
   
+  // Ensure hamburger is hidden on initial load
+  const navToggle = document.getElementById('navToggle');
+  if (navToggle) {
+    navToggle.classList.remove('show');
+  }
+  
   // Wait for fonts to load, then adjust font size
   waitForFonts().then(() => {
     // Small delay to ensure layout is calculated
@@ -349,6 +387,15 @@ document.addEventListener('DOMContentLoaded', () => {
     clearTimeout(resizeTimeout);
     resizeTimeout = setTimeout(() => {
       adjustHeroNamesFontSize();
+      
+      // Update hamburger visibility on resize
+      if (navToggle) {
+        if (window.innerWidth <= 768 && window.pageYOffset <= 10) {
+          navToggle.classList.add('show');
+        } else {
+          navToggle.classList.remove('show');
+        }
+      }
     }, 150);
   });
 });
