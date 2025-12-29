@@ -1,2 +1,5 @@
 __pycache__
 airtable.pat.txt
+password.js
+# Note: password.js is generated during GitHub Actions deployment
+# Local password.js is ignored, but the generated one will be deployed
