@@ -404,6 +404,12 @@ h1, h2, h3 {
   line-height: 1.8;
 }
 
+@media (min-width: 769px) {
+  .story-text {
+    padding-right: 4rem;
+  }
+}
+
 .story-image {
   text-align: center;
 }
@@ -538,6 +544,8 @@ h1, h2, h3 {
 
   .navbar {
     padding: 1.5rem 0;
+    background: transparent;
+    backdrop-filter: blur(10px);
   }
   
   .nav-container {
