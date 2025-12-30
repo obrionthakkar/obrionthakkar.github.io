@@ -73,6 +73,7 @@ h1, h2, h3 {
   background-repeat: repeat-x;
   background-position: center;
   background-size: auto 100%;
+  margin-bottom: 40px
 }
 
 /* Navigation */
@@ -702,7 +703,7 @@ h1, h2, h3 {
   }
 
   .hero-content-section {
-    padding: 40px 20px;
+    padding: 60px 20px 40px 20px;
   }
 
   .hero-names {
@@ -757,7 +758,7 @@ h1, h2, h3 {
 
 @media (max-width: 480px) {
   .hero-content-section {
-    padding: 30px 20px;
+    padding: 50px 20px 30px 20px;
   }
 
   .hero-names {
