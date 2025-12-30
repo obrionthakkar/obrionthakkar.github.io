@@ -5,16 +5,6 @@ const MODAL_SUBMIT_URL = 'https://devangthakkar--wedding-rsvp-submit-rsvp.modal.
 // DOM Elements
 const navToggle = document.getElementById('navToggle');
 const navMenu = document.getElementById('navMenu');
-const lookupForm = document.getElementById('lookupForm');
-const rsvpLookup = document.getElementById('rsvpLookup');
-const rsvpFormContainer = document.getElementById('rsvpFormContainer');
-const rsvpForm = document.getElementById('rsvpForm');
-const lookupError = document.getElementById('lookupError');
-const rsvpSuccess = document.getElementById('rsvpSuccess');
-const cancelRsvp = document.getElementById('cancelRsvp');
-const partyInfo = document.getElementById('partyInfo');
-const eventsFormContainer = document.getElementById('eventsFormContainer');
-const eventsGrid = document.getElementById('eventsGrid');
 
 // Store current party data
 let currentPartyData = null;
@@ -81,9 +71,13 @@ window.addEventListener('scroll', () => {
   lastScrollTop = currentScroll;
 });
 
+// RSVP section removed - all RSVP-related code commented out
+/*
 // Name Lookup Form Handler
-lookupForm.addEventListener('submit', async (e) => {
-  e.preventDefault();
+const lookupForm = document.getElementById('lookupForm');
+if (lookupForm) {
+  lookupForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
   
   const guestName = document.getElementById('guestName').value.trim();
   if (!guestName) {
@@ -267,17 +261,25 @@ cancelRsvp.addEventListener('click', () => {
   
   // Scroll back to lookup form
   rsvpLookup.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-});
+  });
+}
 
 // Error Display Functions
 function showError(message) {
-  lookupError.textContent = message;
-  lookupError.classList.add('show');
+  const lookupError = document.getElementById('lookupError');
+  if (lookupError) {
+    lookupError.textContent = message;
+    lookupError.classList.add('show');
+  }
 }
 
 function hideError() {
-  lookupError.classList.remove('show');
+  const lookupError = document.getElementById('lookupError');
+  if (lookupError) {
+    lookupError.classList.remove('show');
+  }
 }
+*/
 
 // Load events dynamically (if you want to fetch from API)
 async function loadEvents() {

@@ -16,8 +16,8 @@
   <!-- Hero Section -->
   <section id="home" class="hero">
     <picture>
-      <source media="(max-width: 768px)" srcset="assets/hero_mobile_dark.png">
-      <img src="assets/hero-min_dark.png" alt="Wedding Hero" class="hero-image">
+      <source media="(max-width: 768px)" srcset="assets/hero/hero_mobile_dark.png">
+      <img src="assets/hero/hero-min_dark.png" alt="Wedding Hero" class="hero-image">
     </picture>
   </section>
 
@@ -29,7 +29,7 @@
         <span class="ampersand">&</span>
         <span class="name-line">DEVANG THAKKAR</span>
       </h1>
-      <p class="hero-date">SEPTEMBER 12<sup>TH</sup>, 2026</p>
+      <p class="hero-date">SEPTEMBER 12<sup>TH</sup>, 2026</br>RICHMOND, VA</p>
     </div>
   </section>
 
@@ -45,25 +45,25 @@
         <span></span>
       </button>
       <ul class="nav-menu" id="navMenu">
-        <li><a href="#home" class="nav-link">Home</a></li>
-        <li><a href="#story" class="nav-link">Our Story</a></li>
-        <li><a href="#events" class="nav-link">Events</a></li>
-        <li><a href="#rsvp" class="nav-link">RSVP</a></li>
+        <li><a href="#home" class="nav-link">HOME</a></li>
+        <li><a href="#story" class="nav-link">YOU'RE INVITED</a></li>
+        <li><a href="#events" class="nav-link">EVENTS</a></li>
+        <li><a href="#photos" class="nav-link">PHOTOS</a></li>
       </ul>
     </div>
   </nav>
 
-  <!-- Our Story Section -->
+  <!-- You're Invited Section -->
   <section id="story" class="story">
     <div class="container">
-      <h2 class="section-title">Our Story</h2>
+      <h2 class="section-title">You're Invited</h2>
       <div class="story-content">
         <div class="story-text">
           <p>We met on a beautiful spring day and instantly knew we had found something special. After years of adventures, laughter, and growing together, we're excited to celebrate our love with family and friends.</p>
           <p>Your presence at our wedding would mean the world to us as we begin this new chapter together.</p>
         </div>
         <div class="story-image">
-          <img src="assets/cd1.jpg" alt="Our Story" class="story-img">
+          <img src="assets/cd_photos/cd1.jpg" alt="Our Story" class="story-img">
         </div>
       </div>
     </div>
@@ -91,45 +91,17 @@
     </div>
   </section>
 
-  <!-- RSVP Section -->
-  <section id="rsvp" class="rsvp">
+  <!-- Photos Section -->
+  <section id="photos" class="photos">
     <div class="container">
-      <h2 class="section-title">RSVP</h2>
-      <p class="rsvp-subtitle">Please let us know if you'll be joining us</p>
-      
-      <!-- Name Lookup Form -->
-      <div class="rsvp-lookup" id="rsvpLookup">
-        <form id="lookupForm" class="lookup-form">
-          <div class="form-group">
-            <label for="guestName">Enter your name to find your invitation</label>
-            <input 
-              type="text" 
-              id="guestName" 
-              name="guestName" 
-              placeholder="Your name"
-              required
-              autocomplete="name"
-            >
-          </div>
-          <button type="submit" class="btn btn-primary">Find My Invitation</button>
-        </form>
-        <div class="lookup-error" id="lookupError"></div>
-      </div>
-
-      <!-- RSVP Form (hidden until lookup) -->
-      <div class="rsvp-form-container" id="rsvpFormContainer" style="display: none;">
-        <div class="party-info" id="partyInfo"></div>
-        <form id="rsvpForm" class="rsvp-form">
-          <div id="eventsFormContainer"></div>
-          <div class="form-actions">
-            <button type="submit" class="btn btn-primary">Submit RSVP</button>
-            <button type="button" class="btn btn-secondary" id="cancelRsvp">Cancel</button>
-          </div>
-        </form>
-        <div class="rsvp-success" id="rsvpSuccess" style="display: none;">
-          <div class="success-icon">✓</div>
-          <h3>Thank you!</h3>
-          <p>Your RSVP has been submitted successfully.</p>
+      <h2 class="section-title">Photos</h2>
+      <div class="photos-grid" id="photosGrid">
+        <!-- Photos will be added here -->
+        <div class="photo-item">
+          <img src="assets/cd_photos/cd1.jpg" alt="Photo 1" class="photo-img">
+        </div>
+        <div class="photo-item">
+          <img src="assets/cd_photos/cd2.jpg" alt="Photo 2" class="photo-img">
         </div>
       </div>
     </div>
