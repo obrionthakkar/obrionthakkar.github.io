@@ -46,6 +46,17 @@ body {
   background-color: #ebf7ff;
 }
 
+a {
+  color: var(--text-dark);
+  text-decoration: none;
+}
+
+a:hover,
+a:focus,
+a:visited {
+  color: var(--text-dark);
+}
+
 .container {
   max-width: 1200px;
   margin: 0 auto;
@@ -516,10 +527,24 @@ h1, h2, h3 {
 
 /* Footer */
 .footer {
-  background: var(--text-dark);
-  color: white;
+  background: transparent;
+  color: var(--text-dark);
   text-align: center;
   padding: 2rem 0;
+}
+
+.footer-logo {
+  height: 1em;
+  width: auto;
+  vertical-align: baseline;
+  margin-right: 0.5rem;
+  transform: translateY(1px);
+}
+
+.footer-logo-right {
+  margin-right: 0;
+  margin-left: 0.5rem;
+  transform: translateY(1px) scaleX(-1);
 }
 
 /* Mobile Responsive Styles */
