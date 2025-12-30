@@ -65,6 +65,16 @@ h1, h2, h3 {
   color: var(--text-dark);
 }
 
+/* Section Separator */
+.section-separator {
+  width: 100%;
+  height: 100px;
+  background-image: url('assets/chimneys_space.png');
+  background-repeat: repeat-x;
+  background-position: center;
+  background-size: auto 100%;
+}
+
 /* Navigation */
 .navbar {
   position: sticky;
@@ -399,15 +409,12 @@ h1, h2, h3 {
   text-align: center;
 }
 
-.image-placeholder {
+.story-img {
   width: 100%;
-  aspect-ratio: 1;
-  background: linear-gradient(135deg, #f5e6d3 0%, #e8d5c4 100%);
+  height: auto;
   border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 4rem;
+  object-fit: cover;
+  display: block;
 }
 
 /* Events Section */
