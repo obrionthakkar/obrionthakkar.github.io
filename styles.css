@@ -49,12 +49,38 @@ body {
 a {
   color: var(--text-dark);
   text-decoration: none;
+  transition: var(--transition);
+  position: relative;
 }
 
 a:hover,
-a:focus,
+a:focus {
+  color: var(--primary-color);
+}
+
+a::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--primary-color);
+  transition: var(--transition);
+}
+
+a:hover::after,
+a:focus::after {
+  width: 100%;
+}
+
 a:visited {
   color: var(--text-dark);
+}
+
+a:visited:hover,
+a:visited:focus {
+  color: var(--primary-color);
 }
 
 .container {
