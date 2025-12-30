@@ -401,12 +401,17 @@ h1, h2, h3 {
   font-size: 1.1rem;
   margin-bottom: 1.5rem;
   color: var(--text-light);
-  line-height: 1.8;
+  line-height: 2;
 }
 
+/* Reusable text column padding utilities */
 @media (min-width: 769px) {
-  .story-text {
+  .text-column-left {
     padding-right: 4rem;
+  }
+  
+  .text-column-right {
+    padding-left: 4rem;
   }
 }
 
