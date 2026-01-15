@@ -13,6 +13,13 @@
   font-style: normal;
 }
 
+@font-face {
+  font-family: 'SocheliaDEMO';
+  src: url('assets/fonts/SocheliaDEMO.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
 /* CSS Variables for consistent theming */
 :root {
   --primary-color: #ed9a42;
@@ -449,6 +456,55 @@ h1, h2, h3 {
   
   .text-column-right {
     padding-left: 4rem;
+  }
+  
+  .desktop-only {
+    display: block !important;
+  }
+  
+}
+
+.desktop-only {
+  display: none;
+}
+
+/* Hide desktop-only elements on mobile */
+.desktop-center {
+  display: inline;
+}
+
+.key-icon {
+  display: none;
+}
+
+.mobile-colon {
+  display: inline;
+}
+
+@media (min-width: 769px) {
+  .mobile-colon {
+    display: none;
+  }
+}
+
+@media (min-width: 769px) {
+  .desktop-center {
+    display: block;
+    text-align: center;
+    font-family: 'SocheliaDEMO', sans-serif;
+    font-size: 1.3rem;
+  }
+  
+  .key-icon {
+    height: 0.75em;
+    width: auto;
+    vertical-align: middle;
+    display: inline-block;
+    margin: 0 0.5rem;
+  }
+  
+  .key-icon-right {
+    transform: scaleX(-1);
   }
 }
 
