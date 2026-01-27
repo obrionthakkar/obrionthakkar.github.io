@@ -368,6 +368,33 @@ function waitForFonts() {
 document.addEventListener('DOMContentLoaded', () => {
   // Any initialization code
   console.log('Wedding website loaded');
+
+// Heartbeat to keep Modal functions warm
+function keepModalWarm() {
+  // Make a lightweight call to the lookup endpoint with a dummy name
+  // This will warm up the Modal container without affecting functionality
+  fetch(`${MODAL_LOOKUP_URL}?name=heartbeat`, {
+    method: 'GET',
+    // Don't wait for response, fire and forget
+  }).catch(() => {
+    // Silently ignore errors - this is just a warm-up call
+  });
+
+  // Also warm up the submit endpoint
+  fetch(MODAL_SUBMIT_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ heartbeat: true }),
+    // Don't wait for response, fire and forget
+  }).catch(() => {
+    // Silently ignore errors - this is just a warm-up call
+  });
+}
+
+// Call heartbeat after a short delay to not block page load
+setTimeout(keepModalWarm, 2000);
   
   // Ensure hamburger is hidden on initial load
   const navToggle = document.getElementById('navToggle');

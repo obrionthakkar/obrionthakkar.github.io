@@ -1,6 +1,9 @@
 import modal
 import requests
 import os
+from concurrent.futures import ThreadPoolExecutor
+from functools import lru_cache
+import time
 
 app = modal.App("wedding-rsvp")
 
@@ -10,8 +13,23 @@ secrets = modal.Secret.from_name("airtable")
 
 AIRTABLE_URL = "https://api.airtable.com/v0"
 
+# Simple in-memory cache with TTL
+_cache = {}
+_cache_ttl = 30  # 30 seconds
 
-def airtable_get(base, table, formula):
+def _get_cache_key(base, table, formula):
+	return f"{base}:{table}:{formula}"
+
+def _is_cache_valid(cache_entry):
+	return time.time() - cache_entry["timestamp"] < _cache_ttl
+
+def airtable_get(base, table, formula, use_cache=True):
+	# Check cache first
+	if use_cache:
+		cache_key = _get_cache_key(base, table, formula)
+		if cache_key in _cache and _is_cache_valid(_cache[cache_key]):
+			return _cache[cache_key]["data"]
+	
 	url = f"{AIRTABLE_URL}/{base}/{table}"
 	headers = {
 		"Authorization": f"Bearer {os.environ['AIRTABLE_TOKEN']}"
@@ -19,41 +37,102 @@ def airtable_get(base, table, formula):
 	params = {"filterByFormula": formula}
 	r = requests.get(url, headers=headers, params=params)
 	r.raise_for_status()
-	return r.json()["records"]
+	records = r.json()["records"]
+	
+	# Cache the result
+	if use_cache:
+		cache_key = _get_cache_key(base, table, formula)
+		_cache[cache_key] = {
+			"data": records,
+			"timestamp": time.time()
+		}
+	
+	return records
 
 
 @app.function(image=image, secrets=[secrets])
 @modal.fastapi_endpoint(method="GET")
 def lookup(name: str):
-	name = name.lower().strip()
+	name = name.strip()
 	if not name:
 		return {"error": "missing name"}
 
 	base = os.environ["AIRTABLE_BASE"]
 
-	# Party
-	parties = airtable_get(
-		base,
-		"Parties",
-		f"{{lookup_key}}='{name}'"
-	)
-
-	if not parties:
-		return {"error": "party not found"}
-
-	party = parties[0]
-	party_id = party["id"]
-
-	# Guests (linked record lookup)
+	# First, try exact match (case-insensitive)
+	name_lower = name.lower()
 	guests = airtable_get(
 		base,
 		"Guests",
-		f"FIND('{party_id}', ARRAYJOIN({{party}}))"
+		f"LOWER({{display_name}}) = '{name_lower}'"
 	)
+	
+	# If no exact match, check if there are partial matches
+	# If partial matches exist, require full name
+	if not guests:
+		guests_partial = airtable_get(
+			base,
+			"Guests",
+			f"FIND('{name_lower}', LOWER({{display_name}}))",
+			use_cache=False
+		)
+		
+		# If we found partial matches but no exact match, require full name
+		if guests_partial:
+			return {"error": "RSVP not found - please enter your full name. In case of issues, contact us at obrionthakkar@gmail.com"}
+		
+		return {"error": "party not found"}
+	
+	# Get the party from the first matching guest
+	guest = guests[0]
+	if "party" not in guest["fields"] or not guest["fields"]["party"]:
+		return {"error": "guest has no party"}
+	
+	party_id = guest["fields"]["party"][0]
+	
+	# Get the party record and all guests in parallel since they don't depend on each other
+	def fetch_party():
+		return airtable_get(
+			base,
+			"Parties",
+			f"RECORD_ID()='{party_id}'"
+		)
+	
+	def fetch_guests():
+		return airtable_get(
+			base,
+			"Guests",
+			f"FIND('{party_id}', ARRAYJOIN({{party}}))"
+		)
+	
+	# Fetch party and guests in parallel
+	with ThreadPoolExecutor(max_workers=2) as executor:
+		party_future = executor.submit(fetch_party)
+		guests_future = executor.submit(fetch_guests)
+		party_records = party_future.result()
+		guests = guests_future.result()
+	
+	if not party_records:
+		return {"error": "party not found"}
+	
+	party = party_records[0]
+	party_id = party["id"]
+
+	if not guests:
+		return {"error": "no guests found for party"}
 
 	guest_ids = [g["id"] for g in guests]
 
-	# Invitations
+	# Invitations - optimize formula for better performance
+	if not guest_ids:
+		return {
+			"party": {
+				"id": party_id,
+				"name": party["fields"]["display_name"]
+			},
+			"events": []
+		}
+	
 	inv_formula = "OR(" + ",".join(
 		f"FIND('{gid}', ARRAYJOIN({{guest}}))" for gid in guest_ids
 	) + ")"
@@ -64,27 +143,43 @@ def lookup(name: str):
 		inv_formula
 	)
 
-	event_ids = list(set([event_id for i in invitations for event_id in i["fields"]["event"]]))
-	print(event_ids)
+	if not invitations:
+		return {
+			"party": {
+				"id": party_id,
+				"name": party["fields"]["display_name"]
+			},
+			"events": []
+		}
 
-	# Events
+	event_ids = list(set([event_id for i in invitations for event_id in i["fields"]["event"]]))
+	
+	# Parallelize Events and RSVPs lookups since they don't depend on each other
+	if not event_ids:
+		return {
+			"party": {
+				"id": party_id,
+				"name": party["fields"]["display_name"]
+			},
+			"events": []
+		}
+	
 	event_formula = "OR(" + ",".join(
 		f"RECORD_ID()='{eid}'" for eid in event_ids
 	) + ")"
 
-	events = airtable_get(
-		base,
-		"Events",
-		event_formula
-	)
-	print(events)
-
-	# RSVPs
-	rsvps = airtable_get(
-		base,
-		"RSVPs",
-		inv_formula
-	)
+	def fetch_events():
+		return airtable_get(base, "Events", event_formula)
+	
+	def fetch_rsvps():
+		return airtable_get(base, "RSVPs", inv_formula)
+	
+	# Fetch Events and RSVPs in parallel
+	with ThreadPoolExecutor(max_workers=2) as executor:
+		events_future = executor.submit(fetch_events)
+		rsvps_future = executor.submit(fetch_rsvps)
+		events = events_future.result()
+		rsvps = rsvps_future.result()
 
 	# Shape response
 	response = {
@@ -140,7 +235,7 @@ def lookup(name: str):
 	return response
 
 
-@app.function(image=image, secrets=[secrets])
+@app.function(image=image, secrets=[secrets], scaledown_window=300)
 @modal.fastapi_endpoint(method="POST")
 def submit_rsvp(payload: dict):
     """
@@ -172,18 +267,29 @@ def submit_rsvp(payload: dict):
     rsvp_formula = f"AND(FIND('{guest_id}', ARRAYJOIN({{guest}})), FIND('{event_id}', ARRAYJOIN({{event}})))"
     existing_rsvps = airtable_get(base, "RSVPs", rsvp_formula)
 
+    # Convert boolean attending to "Yes"/"No" string format that Airtable expects
+    attending_str = "Yes" if attending else "No"
+    
     if existing_rsvps:
         # Update existing RSVP
         rsvp_id = existing_rsvps[0]["id"]
         url = f"{AIRTABLE_URL}/{base}/RSVPs/{rsvp_id}"
-        data = {"fields": {"attending": attending, "meal_choice": meal_choice}}
+        data = {"fields": {"attending": attending_str, "meal_choice": meal_choice}}
         r = requests.patch(url, headers={"Authorization": f"Bearer {os.environ['AIRTABLE_TOKEN']}", "Content-Type": "application/json"}, json=data)
         r.raise_for_status()
+        
+        # Invalidate cache for RSVPs to ensure fresh data on next lookup
+        _cache.clear()
+        
         return {"status": "updated"}
     else:
         # Create new RSVP
         url = f"{AIRTABLE_URL}/{base}/RSVPs"
-        data = {"fields": {"guest": [guest_id], "event": [event_id], "attending": attending, "meal_choice": meal_choice}}
+        data = {"fields": {"guest": [guest_id], "event": [event_id], "attending": attending_str, "meal_choice": meal_choice}}
         r = requests.post(url, headers={"Authorization": f"Bearer {os.environ['AIRTABLE_TOKEN']}", "Content-Type": "application/json"}, json=data)
         r.raise_for_status()
+        
+        # Invalidate cache for RSVPs to ensure fresh data on next lookup
+        _cache.clear()
+        
         return {"status": "created"}
