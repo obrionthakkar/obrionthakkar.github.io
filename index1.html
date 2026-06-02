@@ -79,9 +79,9 @@
           <li><a href="#home" class="nav-link">HOME</a></li>
           <!-- <li><a href="#story" class="nav-link">YOU'RE INVITED</a></li> -->
           <li><a href="#events" class="nav-link">EVENTS</a></li>
+          <li><a href="#rsvp" class="nav-link">RSVP</a></li>
           <li><a href="#travel" class="nav-link">TRAVEL</a></li>
           <li><a href="#stay" class="nav-link">STAY</a></li>
-          <li><a href="#rsvp" class="nav-link">RSVP</a></li>
           <li><a href="https://www.zola.com/registry/devangandcarrington" class="nav-link">REGISTRY</a></li>
           <!-- <li><a href="#" class="nav-link nav-link-logout" id="logoutButton">LOG OUT</a></li> -->
         </ul>
@@ -97,7 +97,7 @@
           <div class="story-text text-column-right">
             <p>We can't wait to celebrate with you at The Branch Museum of Design in Richmond on September 12, 2026.
               We hope you can join us in Carrington's hometown for a joyful night with family and friends from around the world.
-              More details to come!</p>
+              You can RSVP & find an itinerary <a href="#events">here</a>.</p>
           </div>
         </div>
       </div>
@@ -128,6 +128,36 @@
           </article>
         </div>
         <p class="events-empty" id="eventsEmpty" hidden>No event details are listed for your invitation yet.</p>
+      </div>
+    </section>
+
+    <div class="section-separator"></div>
+
+    <section id="rsvp" class="rsvp">
+      <div class="container">
+        <h2 class="section-title">RSVP</h2>
+        <p class="rsvp-subtitle">Please let us know if you'll be joining us</p>
+        <div class="rsvp-form-container" id="rsvpFormContainer">
+          <div class="party-info" id="partyInfo"></div>
+          <form id="rsvpForm" class="rsvp-form">
+            <div id="eventsFormContainer"></div>
+            <div class="lookup-error" id="rsvpError"></div>
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary" id="submitButton">
+                <span class="button-text">Submit RSVP</span>
+                <span class="button-spinner" style="display: none;">
+                  <span class="spinner"></span>
+                </span>
+              </button>
+              <!-- <button type="button" class="btn btn-secondary" id="cancelRsvp">Reset</button> -->
+            </div>
+          </form>
+          <div class="rsvp-success" id="rsvpSuccess" style="display: none;">
+            <div class="success-icon">✓</div>
+            <h3>Thank you!</h3>
+            <p>Your RSVP has been submitted successfully.</p>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -211,36 +241,6 @@
           </div>
           <div class="story-image">
             <img src="assets/cd_photos/cd4.jpg" class="story-img" alt="Richmond hotels">
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <div class="section-separator"></div>
-
-    <section id="rsvp" class="rsvp">
-      <div class="container">
-        <h2 class="section-title">RSVP</h2>
-        <p class="rsvp-subtitle">Please let us know if you'll be joining us</p>
-        <div class="rsvp-form-container" id="rsvpFormContainer">
-          <div class="party-info" id="partyInfo"></div>
-          <form id="rsvpForm" class="rsvp-form">
-            <div id="eventsFormContainer"></div>
-            <div class="lookup-error" id="rsvpError"></div>
-            <div class="form-actions">
-              <button type="submit" class="btn btn-primary" id="submitButton">
-                <span class="button-text">Submit RSVP</span>
-                <span class="button-spinner" style="display: none;">
-                  <span class="spinner"></span>
-                </span>
-              </button>
-              <!-- <button type="button" class="btn btn-secondary" id="cancelRsvp">Reset</button> -->
-            </div>
-          </form>
-          <div class="rsvp-success" id="rsvpSuccess" style="display: none;">
-            <div class="success-icon">✓</div>
-            <h3>Thank you!</h3>
-            <p>Your RSVP has been submitted successfully.</p>
           </div>
         </div>
       </div>
