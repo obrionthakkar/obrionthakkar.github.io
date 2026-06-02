@@ -70,11 +70,11 @@ function setupRsvpEventListeners() {
 
       currentPartyData.events.forEach(event => {
         event.guests.forEach(guest => {
-          const attendingSelect = rsvpForm.querySelector(`select[name="attending_${event.eventId}_${guest.guestId}"]`);
+          const attendingInput = rsvpForm.querySelector(`input[name="attending_${event.eventId}_${guest.guestId}"]`);
           const mealSelect = rsvpForm.querySelector(`select[name="meal_${event.eventId}_${guest.guestId}"]`);
 
-          if (attendingSelect && attendingSelect.value !== '') {
-            const isAttending = attendingSelect.value === 'true';
+          if (attendingInput && attendingInput.value !== '') {
+            const isAttending = attendingInput.value === 'true';
             const isReception = event.name.toLowerCase().includes('reception');
 
             if (isAttending && isReception && (!mealSelect || !mealSelect.value)) {
@@ -163,6 +163,50 @@ function resetSubmitButton() {
   }
 }
 
+function getAttendingState(attendingValue) {
+  const isAttending = attendingValue === true || attendingValue === 'Yes' || attendingValue === 'yes';
+  const isNotAttending = attendingValue === false || attendingValue === 'No' || attendingValue === 'no';
+  const hasRSVP = attendingValue !== null && attendingValue !== undefined && attendingValue !== '';
+  return { isAttending, isNotAttending, hasRSVP };
+}
+
+function setAttendingChoice(group, value) {
+  const hiddenInput = group.querySelector('input[type="hidden"]');
+  const acceptBtn = group.querySelector('[data-choice="accept"]');
+  const declineBtn = group.querySelector('[data-choice="decline"]');
+  const mealSelect = group.querySelector('select[name^="meal_"]');
+  const isReception = group.dataset.isReception === 'true';
+
+  hiddenInput.value = value;
+  acceptBtn.classList.toggle('selected', value === 'true');
+  declineBtn.classList.toggle('selected', value === 'false');
+  acceptBtn.setAttribute('aria-pressed', value === 'true' ? 'true' : 'false');
+  declineBtn.setAttribute('aria-pressed', value === 'false' ? 'true' : 'false');
+
+  if (mealSelect) {
+    const isAttending = value === 'true';
+    mealSelect.disabled = !isAttending;
+    mealSelect.required = isAttending && isReception;
+    if (!isAttending) {
+      mealSelect.value = '';
+    }
+  }
+}
+
+function setupAttendingToggles(eventGroup, event) {
+  const isReception = event.name.toLowerCase().includes('reception');
+
+  eventGroup.querySelectorAll('.guest-form-group').forEach(group => {
+    group.dataset.isReception = isReception ? 'true' : 'false';
+
+    const acceptBtn = group.querySelector('[data-choice="accept"]');
+    const declineBtn = group.querySelector('[data-choice="decline"]');
+
+    acceptBtn.addEventListener('click', () => setAttendingChoice(group, 'true'));
+    declineBtn.addEventListener('click', () => setAttendingChoice(group, 'false'));
+  });
+}
+
 function buildRsvpForm(events) {
   if (!eventsFormContainer) return;
 
@@ -182,25 +226,22 @@ function buildRsvpForm(events) {
     eventGroup.innerHTML = `
       <h4>${event.name}</h4>
       ${event.guests.map(guest => {
-        const attendingValue = guest.attending;
-        const isAttending = attendingValue === true || attendingValue === 'Yes' || attendingValue === 'yes';
-        const isNotAttending = attendingValue === false || attendingValue === 'No' || attendingValue === 'no';
-        const hasRSVP = attendingValue !== null && attendingValue !== undefined && attendingValue !== '';
-
-        const rsvpStatus = hasRSVP
-          ? (isAttending ? ' ✓ Attending' : ' ✗ Not Attending')
-          : '';
+        const { isAttending, isNotAttending } = getAttendingState(guest.attending);
+        const fieldName = `attending_${event.eventId}_${guest.guestId}`;
+        const initialValue = isAttending ? 'true' : (isNotAttending ? 'false' : '');
         return `
         <div class="guest-form-group">
-          <label>${guest.name}${rsvpStatus}</label>
-          <select name="attending_${event.eventId}_${guest.guestId}" required>
-            <option value="">Select...</option>
-            <option value="true" ${isAttending ? 'selected' : ''}>Attending</option>
-            <option value="false" ${isNotAttending ? 'selected' : ''}>Not Attending</option>
-          </select>
+          <div class="guest-rsvp-row">
+            <span class="guest-name">${guest.name}</span>
+            <div class="rsvp-choice-group" role="group" aria-label="RSVP for ${guest.name}">
+              <button type="button" class="rsvp-choice-btn" data-choice="accept" aria-pressed="${isAttending ? 'true' : 'false'}">Accept</button>
+              <button type="button" class="rsvp-choice-btn" data-choice="decline" aria-pressed="${isNotAttending ? 'true' : 'false'}">Decline</button>
+            </div>
+          </div>
+          <input type="hidden" name="${fieldName}" value="${initialValue}">
           ${event.name.toLowerCase().includes('reception') ? `
-            <label style="margin-top: 1rem;">Meal Choice${guest.meal ? ` <span style="color: var(--text-light); font-weight: normal;">(Current: ${guest.meal})</span>` : ''} <span style="color: #c33;">*</span></label>
-            <select name="meal_${event.eventId}_${guest.guestId}" ${!isAttending ? 'disabled' : ''} ${isAttending ? 'required' : ''} data-required-if-attending="true">
+            <label class="meal-label">Meal Choice${guest.meal ? ` <span class="meal-current">(Current: ${guest.meal})</span>` : ''} <span class="required-mark">*</span></label>
+            <select name="meal_${event.eventId}_${guest.guestId}" ${!isAttending ? 'disabled' : ''} ${isAttending ? 'required' : ''}>
               <option value="">Select meal...</option>
               <option value="Chicken" ${guest.meal === 'Chicken' ? 'selected' : ''}>Chicken</option>
               <option value="Vegetarian" ${guest.meal === 'Vegetarian' || guest.meal === 'Veg' ? 'selected' : ''}>Vegetarian</option>
@@ -212,32 +253,18 @@ function buildRsvpForm(events) {
       }).join('')}
     `;
 
-    const isReception = event.name.toLowerCase().includes('reception');
-
-    eventGroup.querySelectorAll(`select[name^="attending_${event.eventId}"]`).forEach(select => {
-      const guestId = select.name.split('_')[2];
-      const mealSelect = eventGroup.querySelector(`select[name="meal_${event.eventId}_${guestId}"]`);
-      if (mealSelect) {
-        const isAttending = select.value === 'true';
-        mealSelect.disabled = !isAttending;
-        mealSelect.required = isAttending && isReception;
+    eventGroup.querySelectorAll('.guest-form-group').forEach(group => {
+      const hiddenInput = group.querySelector('input[type="hidden"]');
+      const acceptBtn = group.querySelector('[data-choice="accept"]');
+      const declineBtn = group.querySelector('[data-choice="decline"]');
+      if (hiddenInput.value === 'true') {
+        acceptBtn.classList.add('selected');
+      } else if (hiddenInput.value === 'false') {
+        declineBtn.classList.add('selected');
       }
-
-      select.addEventListener('change', (e) => {
-        const guestIdFromEvent = e.target.name.split('_')[2];
-        const mealSelectFromEvent = eventGroup.querySelector(`select[name="meal_${event.eventId}_${guestIdFromEvent}"]`);
-        if (mealSelectFromEvent) {
-          const isAttendingNow = e.target.value === 'true';
-          mealSelectFromEvent.disabled = !isAttendingNow;
-          mealSelectFromEvent.required = isAttendingNow && isReception;
-          if (!isAttendingNow) {
-            mealSelectFromEvent.value = '';
-            mealSelectFromEvent.required = false;
-          }
-        }
-      });
     });
 
+    setupAttendingToggles(eventGroup, event);
     eventsFormContainer.appendChild(eventGroup);
   });
 }

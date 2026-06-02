@@ -793,6 +793,20 @@ h1, h2, h3 {
     padding: 1.5rem;
   }
 
+  .guest-rsvp-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .rsvp-choice-group {
+    width: 100%;
+  }
+
+  .rsvp-choice-btn {
+    flex: 1;
+    min-width: 0;
+  }
+
   .form-actions {
     flex-direction: column;
   }
@@ -930,6 +944,75 @@ h1, h2, h3 {
   padding: 1.5rem;
   background: var(--bg-white);
   border-radius: 5px;
+}
+
+.guest-rsvp-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.guest-name {
+  font-weight: 600;
+  color: var(--text-dark);
+  font-size: 1rem;
+  flex: 1;
+  min-width: 120px;
+}
+
+.rsvp-choice-group {
+  display: flex;
+  gap: 0.75rem;
+  flex-shrink: 0;
+}
+
+.rsvp-choice-btn {
+  min-width: 100px;
+  padding: 0.65rem 1.25rem;
+  border: 2px solid var(--text-dark);
+  background: var(--bg-white);
+  color: var(--text-dark);
+  font-family: 'Jost', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+  border-radius: 4px;
+}
+
+.rsvp-choice-btn:hover {
+  border-color: var(--primary-color);
+}
+
+.rsvp-choice-btn.selected {
+  background: var(--text-dark);
+  border-color: var(--text-dark);
+  color: #fff;
+}
+
+.rsvp-choice-btn.selected[data-choice="accept"] {
+  background: var(--primary-color);
+  border-color: var(--primary-color);
+  color: #fff;
+}
+
+.meal-label {
+  display: block;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.meal-current {
+  color: var(--text-light);
+  font-weight: normal;
+}
+
+.required-mark {
+  color: #c33;
 }
 
 .guest-form-group label {
