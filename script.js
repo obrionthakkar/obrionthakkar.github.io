@@ -1,8 +1,9 @@
 // API — same origin on Modal; full Modal URL when hosted elsewhere (e.g. GitHub Pages /test)
 const MODAL_HOST = 'https://devangthakkar--wedding-rsvp-web.modal.run';
 const MODAL_BASE = window.location.hostname.endsWith('modal.run') ? '' : MODAL_HOST;
-const MODAL_LOOKUP_URL = `${MODAL_BASE}/lookup`;
-const MODAL_SUBMIT_URL = `${MODAL_BASE}/submit-rsvp`;
+const MODAL_LOOKUP_URL = `${MODAL_BASE}/api/lookup`;
+const MODAL_SUBMIT_URL = `${MODAL_BASE}/api/submit-rsvp`;
+const MODAL_HEALTH_URL = `${MODAL_BASE}/api/health`;
 
 // DOM Elements
 const navToggle = document.getElementById('navToggle');
@@ -373,32 +374,14 @@ document.addEventListener('DOMContentLoaded', () => {
   // Any initialization code
   console.log('Wedding website loaded');
 
-// Heartbeat to keep Modal functions warm
+// Heartbeat to keep Modal container warm (lightweight — no Airtable)
 function keepModalWarm() {
-  // Make a lightweight call to the lookup endpoint with a dummy name
-  // This will warm up the Modal container without affecting functionality
-  fetch(`${MODAL_LOOKUP_URL}?name=heartbeat`, {
-    method: 'GET',
-    // Don't wait for response, fire and forget
-  }).catch(() => {
-    // Silently ignore errors - this is just a warm-up call
-  });
-
-  // Also warm up the submit endpoint
-  fetch(MODAL_SUBMIT_URL, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ heartbeat: true }),
-    // Don't wait for response, fire and forget
-  }).catch(() => {
-    // Silently ignore errors - this is just a warm-up call
-  });
+  fetch(MODAL_HEALTH_URL).catch(() => {});
 }
 
-// Call heartbeat after a short delay to not block page load
+// Ping on load, then every 4 minutes while the tab is open
 setTimeout(keepModalWarm, 2000);
+setInterval(keepModalWarm, 4 * 60 * 1000);
   
   // Ensure hamburger is hidden on initial load
   const navToggle = document.getElementById('navToggle');
