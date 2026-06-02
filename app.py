@@ -23,12 +23,13 @@ image = (
             "*.py",
             "__pycache__",
             ".git",
+            "test",
             "test.html",
-            "index1.html",
             ".gitignore",
             "airtable.pat.txt",
             "CNAME",
             "robots.txt",
+            "scripts",
         ],
     )
 )
@@ -304,11 +305,28 @@ def lookup(name: str):
     return do_lookup(name)
 
 
+@web_app.get("/api/lookup")
+def lookup_api(name: str):
+    return do_lookup(name)
+
+
 @web_app.post("/submit-rsvp")
 def submit_rsvp(payload: dict):
     if payload.get("heartbeat"):
         return {"status": "ok"}
     return do_submit_rsvp(payload)
+
+
+@web_app.post("/api/submit-rsvp")
+def submit_rsvp_api(payload: dict):
+    if payload.get("heartbeat"):
+        return {"status": "ok"}
+    return do_submit_rsvp(payload)
+
+
+@web_app.get("/api/health")
+def health():
+    return {"status": "ok"}
 
 
 @app.function(image=image, secrets=[secrets], scaledown_window=300, min_containers=1)
