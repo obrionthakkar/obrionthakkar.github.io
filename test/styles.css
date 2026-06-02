@@ -691,8 +691,7 @@ h1, h2, h3 {
 .footer-logout {
   color: var(--text-dark);
   font-size: 0.95rem;
-  text-decoration: underline;
-  text-underline-offset: 3px;
+  text-decoration: none;
   opacity: 0.75;
   transition: var(--transition);
 }
