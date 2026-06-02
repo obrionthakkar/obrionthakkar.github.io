@@ -684,6 +684,23 @@ h1, h2, h3 {
   transform: translateY(1px) scaleX(-1);
 }
 
+.footer-logout-wrap {
+  margin-bottom: 1rem;
+}
+
+.footer-logout {
+  color: var(--text-dark);
+  font-size: 0.95rem;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  opacity: 0.75;
+  transition: var(--transition);
+}
+
+.footer-logout:hover {
+  opacity: 1;
+}
+
 /* Mobile Responsive Styles */
 @media (max-width: 768px) {
   .nav-menu {

@@ -28,7 +28,7 @@ document.querySelectorAll('.nav-link').forEach(link => {
 });
 
 // Smooth scroll for navigation links (exclude logout)
-document.querySelectorAll('a[href^="#"]:not(.nav-link-logout)').forEach(anchor => {
+document.querySelectorAll('a[href^="#"]:not(.nav-link-logout):not(.footer-logout)').forEach(anchor => {
   anchor.addEventListener('click', function (e) {
     e.preventDefault();
     const target = document.querySelector(this.getAttribute('href'));
