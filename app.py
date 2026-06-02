@@ -6,9 +6,7 @@ from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 import fastapi
-from fastapi import APIRouter
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import Response
 from fastapi.staticfiles import StaticFiles
 
 app = modal.App("wedding-rsvp")
@@ -286,32 +284,7 @@ def do_submit_rsvp(payload: dict):
     return {"status": "created"}
 
 
-api = APIRouter(prefix="/api")
-
-
-@api.get("/health")
-def health():
-    return {"status": "ok"}
-
-
-@api.head("/health")
-def health_head():
-    return Response(status_code=200)
-
-
-@api.get("/lookup")
-def lookup(name: str):
-    return do_lookup(name)
-
-
-@api.post("/submit-rsvp")
-def submit_rsvp(payload: dict):
-    return do_submit_rsvp(payload)
-
-
 web_app = fastapi.FastAPI()
-
-web_app.include_router(api)
 
 web_app.add_middleware(
     CORSMiddleware,
@@ -321,12 +294,24 @@ web_app.add_middleware(
         "https://www.devangandcarrington.com",
         "https://devangandcarrington.com",
     ],
-    allow_methods=["GET", "HEAD", "POST", "OPTIONS"],
+    allow_methods=["GET", "POST", "OPTIONS"],
     allow_headers=["Content-Type"],
 )
 
 
-@app.function(image=image, secrets=[secrets], scaledown_window=1200)
+@web_app.get("/lookup")
+def lookup(name: str):
+    return do_lookup(name)
+
+
+@web_app.post("/submit-rsvp")
+def submit_rsvp(payload: dict):
+    if payload.get("heartbeat"):
+        return {"status": "ok"}
+    return do_submit_rsvp(payload)
+
+
+@app.function(image=image, secrets=[secrets], scaledown_window=300, min_containers=1)
 @modal.concurrent(max_inputs=100)
 @modal.asgi_app()
 def web():
