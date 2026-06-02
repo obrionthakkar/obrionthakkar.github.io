@@ -599,6 +599,13 @@ h1, h2, h3 {
   background: var(--bg-white);
 }
 
+.login .section-title {
+  font-family: "ogg", serif;
+  font-weight: 400;
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
 .login-subtitle {
   text-align: center;
   font-size: 1.1rem;
