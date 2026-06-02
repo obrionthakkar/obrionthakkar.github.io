@@ -28,6 +28,7 @@
   --shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   --shadow-hover: 0 4px 20px rgba(0, 0, 0, 0.15);
   --transition: all 0.3s ease;
+  --rsvp-decline-color: #C8756F;
 }
 
 /* Reset and Base Styles */
@@ -982,19 +983,34 @@ h1, h2, h3 {
   border-radius: 4px;
 }
 
-.rsvp-choice-btn:hover {
-  border-color: var(--primary-color);
+.rsvp-choice-btn[data-choice="decline"] {
+  border-color: var(--rsvp-decline-color);
+  color: var(--rsvp-decline-color);
 }
 
-.rsvp-choice-btn.selected {
+.rsvp-choice-btn:hover {
+  opacity: 0.85;
+}
+
+.rsvp-choice-btn[data-choice="accept"]:hover {
+  border-color: var(--text-dark);
+  background: rgba(0, 20, 137, 0.08);
+}
+
+.rsvp-choice-btn[data-choice="decline"]:hover {
+  border-color: var(--rsvp-decline-color);
+  background: rgba(200, 117, 111, 0.12);
+}
+
+.rsvp-choice-btn.selected[data-choice="accept"] {
   background: var(--text-dark);
   border-color: var(--text-dark);
   color: #fff;
 }
 
-.rsvp-choice-btn.selected[data-choice="accept"] {
-  background: var(--primary-color);
-  border-color: var(--primary-color);
+.rsvp-choice-btn.selected[data-choice="decline"] {
+  background: var(--rsvp-decline-color);
+  border-color: var(--rsvp-decline-color);
   color: #fff;
 }
 
