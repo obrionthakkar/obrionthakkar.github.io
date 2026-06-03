@@ -524,9 +524,11 @@ h1, h2, h3 {
 }
 
 .events-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  max-width: 640px;
+  margin: 0 auto;
 }
 
 .event-card {
@@ -536,6 +538,7 @@ h1, h2, h3 {
   text-align: center;
   box-shadow: var(--shadow);
   transition: var(--transition);
+  width: 100%;
 }
 
 .event-card:hover {
@@ -785,10 +788,6 @@ h1, h2, h3 {
   .story-content {
     grid-template-columns: 1fr;
     gap: 2rem;
-  }
-
-  .events-grid {
-    grid-template-columns: 1fr;
   }
 
   .btn {
