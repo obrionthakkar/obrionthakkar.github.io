@@ -329,7 +329,7 @@ def health():
     return {"status": "ok"}
 
 
-@app.function(image=image, secrets=[secrets], scaledown_window=300, min_containers=1)
+@app.function(image=image, secrets=[secrets], scaledown_window=3600, min_containers=1)
 @modal.concurrent(max_inputs=100)
 @modal.asgi_app()
 def web():
