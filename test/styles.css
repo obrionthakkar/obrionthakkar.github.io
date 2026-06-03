@@ -946,26 +946,27 @@ h1, h2, h3 {
 }
 
 .event-form-group {
-  margin-bottom: 2rem;
-  padding-bottom: 2rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.5rem;
   border-bottom: 1px solid var(--border-color);
 }
 
 .event-form-group:last-of-type {
   border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
 }
 
 .event-form-group h4 {
   font-size: 1.3rem;
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
   color: var(--text-dark);
 }
 
 .guest-form-group {
-  margin-bottom: 1.5rem;
-  padding: 1.5rem;
-  background: var(--bg-white);
-  border-radius: 5px;
+  margin-bottom: 0.75rem;
+  padding: 0.25rem 0;
+  background: transparent;
 }
 
 .guest-rsvp-row {
@@ -994,7 +995,7 @@ h1, h2, h3 {
   min-width: 100px;
   padding: 0.65rem 1.25rem;
   border: 2px solid var(--text-dark);
-  background: var(--bg-white);
+  background: #fff;
   color: var(--text-dark);
   font-family: 'Jost', sans-serif;
   font-size: 0.95rem;
