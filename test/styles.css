@@ -600,7 +600,7 @@ h1, h2, h3 {
 }
 
 .login .section-title {
-  font-family: "ogg", serif;
+  font-family: "Playfair Display", serif;
   font-weight: 400;
   font-size: 3rem;
   margin-bottom: 1rem;
@@ -1086,13 +1086,6 @@ h1, h2, h3 {
   margin-top: 2rem;
 }
 
-.rsvp-success {
-  text-align: center;
-  padding: 3rem;
-  background: var(--bg-light);
-  border-radius: 10px;
-}
-
 .success-icon {
   width: 80px;
   height: 80px;
@@ -1107,15 +1100,30 @@ h1, h2, h3 {
   font-weight: bold;
 }
 
-.rsvp-success h3 {
-  font-size: 2rem;
-  margin-bottom: 1rem;
-  color: var(--text-dark);
+.rsvp-success {
+  text-align: center;
+  padding: 1.5rem 2rem;
+  margin-bottom: 2rem;
+  background: var(--bg-white);
+  border-radius: 10px;
+  border: 2px solid var(--primary-color);
 }
 
-.rsvp-success p {
-  color: var(--text-light);
-  font-size: 1.1rem;
+.rsvp-form .rsvp-success .success-icon {
+  width: 48px;
+  height: 48px;
+  margin: 0 auto 1rem;
+  font-size: 1.5rem;
+}
+
+.rsvp-form .rsvp-success h3 {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.rsvp-form .rsvp-success p {
+  font-size: 1rem;
+  margin-bottom: 0;
 }
 
 /* Loading States */

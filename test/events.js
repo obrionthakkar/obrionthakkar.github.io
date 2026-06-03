@@ -1,9 +1,12 @@
 // Events visibility — match Airtable Events by record id (name fallback)
 // Reception: rec1xtXaKkk48vZmD | Welcome Dinner: recsdp2OAZauKrGFf
+// Mehendi: recOdVBnTvKEqomRb | Rehearsal: recH9PaR5e5vxi6AM
 
 const EVENT_MATCHERS = {
   rec1xtXaKkk48vZmD: (name) => name.includes('reception'),
-  recsdp2OAZauKrGFf: (name) => name.includes('welcome')
+  recsdp2OAZauKrGFf: (name) => name.includes('welcome'),
+  recOdVBnTvKEqomRb: (name) => name.includes('mehendi'),
+  recH9PaR5e5vxi6AM: (name) => name.includes('rehearsal')
 };
 
 function isInvitedToEvent(invitedEvents, eventId) {

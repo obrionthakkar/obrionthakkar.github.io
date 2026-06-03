@@ -129,7 +129,6 @@ function setupRsvpEventListeners() {
         return false;
       }
 
-      rsvpForm.style.display = 'none';
       rsvpSuccess.style.display = 'block';
       rsvpSuccess.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 
