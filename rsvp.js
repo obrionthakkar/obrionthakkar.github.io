@@ -125,6 +125,14 @@ function setupRsvpEventListeners() {
         return false;
       }
 
+      updatePartyDataFromSubmissions(submissions);
+      buildRsvpForm(currentPartyData.events);
+
+      const guestName = typeof getStoredGuestName === 'function' ? getStoredGuestName() : null;
+      if (guestName && typeof saveSession === 'function') {
+        saveSession(guestName, currentPartyData);
+      }
+
       rsvpSuccess.style.display = 'block';
       rsvpSuccess.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 
@@ -156,6 +164,21 @@ function resetSubmitButton() {
     if (buttonText) buttonText.textContent = 'Submit RSVP';
     if (buttonSpinner) buttonSpinner.style.display = 'none';
   }
+}
+
+function updatePartyDataFromSubmissions(submissions) {
+  if (!currentPartyData) return;
+
+  submissions.forEach(({ guestId, eventId, attending, meal_choice }) => {
+    const event = currentPartyData.events.find(e => e.eventId === eventId);
+    if (!event) return;
+
+    const guest = event.guests.find(g => g.guestId === guestId);
+    if (!guest) return;
+
+    guest.attending = attending ? 'Yes' : 'No';
+    guest.meal = meal_choice || null;
+  });
 }
 
 function getAttendingState(attendingValue) {
