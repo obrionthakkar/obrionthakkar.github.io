@@ -557,6 +557,14 @@ h1, h2, h3 {
   color: var(--text-dark);
 }
 
+.event-card h3 .event-host {
+  display: block;
+  font-size: 1rem;
+  font-weight: 400;
+  font-style: italic;
+  margin-top: 0.25rem;
+}
+
 .event-time {
   font-size: 1.2rem;
   color: var(--primary-color);
