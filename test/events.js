@@ -21,7 +21,7 @@ function isInvitedToEvent(invitedEvents, eventId) {
 }
 
 function renderEvents(partyData) {
-  const cards = document.querySelectorAll('[data-event-id]');
+  const cards = document.querySelectorAll('#eventsGrid .event-card');
   const eventsEmpty = document.getElementById('eventsEmpty');
   if (!cards.length) return;
 
@@ -29,6 +29,12 @@ function renderEvents(partyData) {
   let visibleCount = 0;
 
   cards.forEach((card) => {
+    if (card.hasAttribute('data-event-always-visible')) {
+      card.hidden = false;
+      visibleCount++;
+      return;
+    }
+
     const eventId = card.getAttribute('data-event-id');
     const invited = isInvitedToEvent(invitedEvents, eventId);
     card.hidden = !invited;
