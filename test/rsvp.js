@@ -1,5 +1,7 @@
 // RSVP System — form only (login handled by auth.js)
 
+const WEDDING_EVENT_ID = 'rec1xtXaKkk48vZmD';
+
 let rsvpFormContainer, rsvpForm, rsvpSuccess, cancelRsvp, partyInfo, eventsFormContainer, rsvpError;
 
 function initRSVP() {
@@ -71,23 +73,17 @@ function setupRsvpEventListeners() {
       currentPartyData.events.forEach(event => {
         event.guests.forEach(guest => {
           const attendingInput = rsvpForm.querySelector(`input[name="attending_${event.eventId}_${guest.guestId}"]`);
-          const mealSelect = rsvpForm.querySelector(`select[name="meal_${event.eventId}_${guest.guestId}"]`);
+          const mealInput = rsvpForm.querySelector(`input[name="meal_${event.eventId}_${guest.guestId}"]`);
 
           if (attendingInput && attendingInput.value !== '') {
             const isAttending = attendingInput.value === 'true';
-            const isReception = event.name.toLowerCase().includes('reception');
-
-            if (isAttending && isReception && (!mealSelect || !mealSelect.value)) {
-              showRsvpError('Meal choice is required for the Reception. Please select a meal option.');
-              resetSubmitButton();
-              return false;
-            }
+            const mealValue = mealInput && mealInput.value.trim() ? mealInput.value.trim() : null;
 
             submissions.push({
               guestId: guest.guestId,
               eventId: event.eventId,
               attending: isAttending,
-              meal_choice: mealSelect && mealSelect.value ? mealSelect.value : null
+              meal_choice: mealValue
             });
           }
         });
@@ -173,8 +169,7 @@ function setAttendingChoice(group, value) {
   const hiddenInput = group.querySelector('input[type="hidden"]');
   const acceptBtn = group.querySelector('[data-choice="accept"]');
   const declineBtn = group.querySelector('[data-choice="decline"]');
-  const mealSelect = group.querySelector('select[name^="meal_"]');
-  const isReception = group.dataset.isReception === 'true';
+  const mealInput = group.querySelector('input[name^="meal_"]');
 
   hiddenInput.value = value;
   acceptBtn.classList.toggle('selected', value === 'true');
@@ -182,22 +177,17 @@ function setAttendingChoice(group, value) {
   acceptBtn.setAttribute('aria-pressed', value === 'true' ? 'true' : 'false');
   declineBtn.setAttribute('aria-pressed', value === 'false' ? 'true' : 'false');
 
-  if (mealSelect) {
+  if (mealInput) {
     const isAttending = value === 'true';
-    mealSelect.disabled = !isAttending;
-    mealSelect.required = isAttending && isReception;
+    mealInput.disabled = !isAttending;
     if (!isAttending) {
-      mealSelect.value = '';
+      mealInput.value = '';
     }
   }
 }
 
 function setupAttendingToggles(eventGroup, event) {
-  const isReception = event.name.toLowerCase().includes('reception');
-
   eventGroup.querySelectorAll('.guest-form-group').forEach(group => {
-    group.dataset.isReception = isReception ? 'true' : 'false';
-
     const acceptBtn = group.querySelector('[data-choice="accept"]');
     const declineBtn = group.querySelector('[data-choice="decline"]');
 
@@ -238,14 +228,15 @@ function buildRsvpForm(events) {
             </div>
           </div>
           <input type="hidden" name="${fieldName}" value="${initialValue}">
-          ${event.name.toLowerCase().includes('reception') ? `
-            <label class="meal-label">Meal Choice${guest.meal ? ` <span class="meal-current">(Current: ${guest.meal})</span>` : ''} <span class="required-mark">*</span></label>
-            <select name="meal_${event.eventId}_${guest.guestId}" ${!isAttending ? 'disabled' : ''} ${isAttending ? 'required' : ''}>
-              <option value="">Select meal...</option>
-              <option value="Chicken" ${guest.meal === 'Chicken' ? 'selected' : ''}>Chicken</option>
-              <option value="Vegetarian" ${guest.meal === 'Vegetarian' || guest.meal === 'Veg' ? 'selected' : ''}>Vegetarian</option>
-              <option value="Restrictions (please contact us)" ${guest.meal === 'Restrictions (please contact us)' ? 'selected' : ''}>Restrictions (please contact us)</option>
-            </select>
+          ${event.eventId === WEDDING_EVENT_ID ? `
+            <label class="meal-label">Dietary restrictions${guest.meal ? ` <span class="meal-current">(Current: ${guest.meal})</span>` : ''}</label>
+            <input type="text"
+              name="meal_${event.eventId}_${guest.guestId}"
+              class="meal-input"
+              placeholder="e.g. vegetarian, nut allergy, or none"
+              value="${guest.meal || ''}"
+              maxlength="200"
+              ${!isAttending ? 'disabled' : ''}>
           ` : ''}
         </div>
       `;

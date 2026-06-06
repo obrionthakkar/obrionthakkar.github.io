@@ -1068,7 +1068,9 @@ h1, h2, h3 {
   color: var(--text-dark);
 }
 
-.guest-form-group select {
+.guest-form-group select,
+.guest-form-group input.meal-input,
+.guest-form-group input[type="text"][name^="meal_"] {
   width: 100%;
   padding: 10px;
   border: 2px solid var(--border-color);
@@ -1077,12 +1079,16 @@ h1, h2, h3 {
   font-family: 'Jost', sans-serif;
 }
 
-.guest-form-group select:focus {
+.guest-form-group select:focus,
+.guest-form-group input.meal-input:focus,
+.guest-form-group input[type="text"][name^="meal_"]:focus {
   outline: none;
   border-color: var(--primary-color);
 }
 
-.guest-form-group select:disabled {
+.guest-form-group select:disabled,
+.guest-form-group input.meal-input:disabled,
+.guest-form-group input[type="text"][name^="meal_"]:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
