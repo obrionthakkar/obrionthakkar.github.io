@@ -2,6 +2,30 @@
 
 const WEDDING_EVENT_ID = 'rec1xtXaKkk48vZmD';
 
+// RSVP display order (matches Events page)
+const RSVP_EVENT_ORDER = [
+  'recOdVBnTvKEqomRb', // Carrington's Mehendi
+  'recH9PaR5e5vxi6AM', // Rehearsal
+  'recsdp2OAZauKrGFf', // Welcome Dinner / Mehendi Celebration
+  'rec1xtXaKkk48vZmD'  // Reception / Our Wedding
+];
+
+function getEventSortIndex(event) {
+  const byId = RSVP_EVENT_ORDER.indexOf(event.eventId);
+  if (byId !== -1) return byId;
+
+  const name = (event.name || '').toLowerCase();
+  if (name.includes('carrington') && name.includes('mehendi')) return 0;
+  if (name.includes('rehearsal')) return 1;
+  if (name.includes('welcome') || name.includes('celebration')) return 2;
+  if (name.includes('reception') || name.includes('wedding')) return 3;
+  return RSVP_EVENT_ORDER.length;
+}
+
+function sortEventsForRsvp(events) {
+  return [...events].sort((a, b) => getEventSortIndex(a) - getEventSortIndex(b));
+}
+
 let rsvpFormContainer, rsvpForm, rsvpSuccess, cancelRsvp, partyInfo, eventsFormContainer, rsvpError;
 
 function initRSVP() {
@@ -224,12 +248,7 @@ function buildRsvpForm(events) {
 
   eventsFormContainer.innerHTML = '';
 
-  const sortedEvents = [...events].sort((a, b) => {
-    if (a.sort_order !== undefined && b.sort_order !== undefined) {
-      return a.sort_order - b.sort_order;
-    }
-    return 0;
-  });
+  const sortedEvents = sortEventsForRsvp(events);
 
   sortedEvents.forEach(event => {
     const eventGroup = document.createElement('div');
