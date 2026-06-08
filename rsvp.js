@@ -10,6 +10,24 @@ const RSVP_EVENT_ORDER = [
   'rec1xtXaKkk48vZmD'  // Reception / Our Wedding
 ];
 
+const RSVP_EVENT_TITLES = {
+  recOdVBnTvKEqomRb: "Carrington's Mehendi, September 9",
+  recH9PaR5e5vxi6AM: 'Rehearsal, September 10',
+  recsdp2OAZauKrGFf: 'Mehendi Celebration, September 10',
+  rec1xtXaKkk48vZmD: 'Ceremony & Reception, September 11'
+};
+
+function getRsvpEventTitle(event) {
+  if (RSVP_EVENT_TITLES[event.eventId]) return RSVP_EVENT_TITLES[event.eventId];
+
+  const name = (event.name || '').toLowerCase();
+  if (name.includes('carrington') && name.includes('mehendi')) return RSVP_EVENT_TITLES.recOdVBnTvKEqomRb;
+  if (name.includes('rehearsal')) return RSVP_EVENT_TITLES.recH9PaR5e5vxi6AM;
+  if (name.includes('welcome') || name.includes('celebration')) return RSVP_EVENT_TITLES.recsdp2OAZauKrGFf;
+  if (name.includes('reception') || name.includes('wedding')) return RSVP_EVENT_TITLES.rec1xtXaKkk48vZmD;
+  return event.name;
+}
+
 function getEventSortIndex(event) {
   const byId = RSVP_EVENT_ORDER.indexOf(event.eventId);
   if (byId !== -1) return byId;
@@ -255,7 +273,7 @@ function buildRsvpForm(events) {
     eventGroup.className = 'event-form-group';
 
     eventGroup.innerHTML = `
-      <h4>${event.name}</h4>
+      <h4>${getRsvpEventTitle(event)}</h4>
       ${event.guests.map(guest => {
         const { isAttending, isNotAttending } = getAttendingState(guest.attending);
         const fieldName = `attending_${event.eventId}_${guest.guestId}`;
