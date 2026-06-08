@@ -293,7 +293,7 @@ function buildRsvpForm(events) {
             <input type="text"
               name="meal_${event.eventId}_${guest.guestId}"
               class="meal-input"
-              placeholder="e.g. vegetarian, nut allergy, or none"
+              placeholder="e.g. vegetarian, nut allergy, or kid's meal"
               value="${guest.meal || ''}"
               maxlength="200"
               ${!isAttending ? 'disabled' : ''}>
