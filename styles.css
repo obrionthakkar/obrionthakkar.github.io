@@ -435,6 +435,16 @@ h1, h2, h3 {
   box-shadow: var(--shadow-hover);
 }
 
+.login .btn-primary {
+  background: var(--text-dark);
+}
+
+.login .btn-primary:hover {
+  background: #001060;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-hover);
+}
+
 /* Story Section */
 .story {
   padding: 80px 0;
