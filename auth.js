@@ -31,7 +31,7 @@ async function lookupGuest(name) {
   const data = await response.json();
   if (data.error) {
     const message = data.error === 'party not found'
-      ? "We couldn't find your invitation. Please check the spelling of your name."
+      ? "We couldn't find your invitation. Please contact us at obrionthakkar@gmail.com and we'll help you out."
       : data.error;
     return { error: message };
   }
