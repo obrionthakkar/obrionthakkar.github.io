@@ -1234,13 +1234,21 @@ h1, h2, h3 {
   margin: 0 auto;
 }
 
+.dress-code-content img,
 .dress-code-image {
   display: block;
-  width: 100%;
+  width: auto;
   max-width: 480px;
   height: auto;
   margin: 0 auto 2rem;
   border-radius: 10px;
+}
+
+@media (max-width: 520px) {
+  .dress-code-content img,
+  .dress-code-image {
+    max-width: 100%;
+  }
 }
 
 .dress-code-text {
