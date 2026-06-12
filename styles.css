@@ -60,7 +60,6 @@ a {
 a:hover,
 a:focus {
   color: var(--text-dark);
-  font-style: italic;
 }
 
 a::after {
@@ -86,7 +85,6 @@ a:visited {
 a:visited:hover,
 a:visited:focus {
   color: var(--text-dark);
-  font-style: italic;
 }
 
 .container {
@@ -164,7 +162,6 @@ h1, h2, h3 {
 
 .nav-link:hover {
   color: var(--text-dark);
-  font-style: italic;
 }
 
 .nav-link::after {
