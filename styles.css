@@ -651,13 +651,6 @@ h1, h2, h3 {
   margin: 0 auto;
 }
 
-.login .lookup-form .form-group input {
-  display: block;
-  width: min(100%, 320px);
-  margin: 0 auto;
-  text-align: center;
-}
-
 #guest-site[hidden] {
   display: none;
 }
