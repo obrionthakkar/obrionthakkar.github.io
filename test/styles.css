@@ -59,7 +59,8 @@ a {
 
 a:hover,
 a:focus {
-  color: var(--primary-color);
+  color: var(--text-dark);
+  font-style: italic;
 }
 
 a::after {
@@ -69,7 +70,7 @@ a::after {
   left: 0;
   width: 0;
   height: 2px;
-  background: var(--primary-color);
+  background: var(--text-dark);
   transition: var(--transition);
 }
 
@@ -84,7 +85,8 @@ a:visited {
 
 a:visited:hover,
 a:visited:focus {
-  color: var(--primary-color);
+  color: var(--text-dark);
+  font-style: italic;
 }
 
 .container {
@@ -161,7 +163,8 @@ h1, h2, h3 {
 }
 
 .nav-link:hover {
-  color: var(--primary-color);
+  color: var(--text-dark);
+  font-style: italic;
 }
 
 .nav-link::after {
@@ -171,7 +174,7 @@ h1, h2, h3 {
   left: 0;
   width: 0;
   height: 2px;
-  background: var(--primary-color);
+  background: var(--text-dark);
   transition: var(--transition);
 }
 
