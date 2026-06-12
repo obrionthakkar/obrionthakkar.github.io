@@ -38,25 +38,6 @@ async function lookupGuest(name) {
   return { data };
 }
 
-function getHashScrollTarget() {
-  const hash = window.location.hash;
-  if (!hash || hash.length < 2) return null;
-  try {
-    return document.querySelector(hash);
-  } catch {
-    return null;
-  }
-}
-
-function scrollToTarget(target) {
-  if (!target) return;
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    });
-  });
-}
-
 function showGuestSite() {
   const loginSection = document.getElementById('login');
   const guestSite = document.getElementById('guest-site');
@@ -89,7 +70,9 @@ function onLoginSuccess(data, guestName, scrollTarget) {
     initRsvpFromPartyData(data);
   }
 
-  scrollToTarget(scrollTarget || getHashScrollTarget());
+  if (scrollTarget) {
+    scrollTarget.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
 }
 
 async function loginWithName(name, options = {}) {
@@ -188,7 +171,7 @@ function initAuth() {
 
     try {
       const result = await loginWithName(guestName, {
-        scrollTarget: getHashScrollTarget() || document.getElementById('story')
+        scrollTarget: document.getElementById('story')
       });
       if (result.error) {
         showLoginError(result.error);

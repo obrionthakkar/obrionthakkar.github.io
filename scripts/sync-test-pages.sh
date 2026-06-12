@@ -8,7 +8,6 @@ DEST="$ROOT/test"
 mkdir -p "$DEST"
 cp "$ROOT/index1.html" "$DEST/index.html"
 cp "$ROOT/dress-code-mehendi.html" "$ROOT/dress-code-wedding.html" "$DEST/"
-sed -i 's/index1.html/index.html/g' "$DEST/dress-code-mehendi.html" "$DEST/dress-code-wedding.html"
 cp "$ROOT/styles.css" "$ROOT/script.js" "$ROOT/auth.js" "$ROOT/events.js" "$ROOT/rsvp.js" "$DEST/"
 rsync -a --delete "$ROOT/assets/" "$DEST/assets/"
 
