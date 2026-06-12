@@ -1221,3 +1221,37 @@ h1, h2, h3 {
   pointer-events: none;
   cursor: not-allowed;
 }
+
+/* Dress Code Pages */
+.dress-code {
+  padding: 80px 0;
+  min-height: 100vh;
+  background: var(--bg-white);
+}
+
+.dress-code-content {
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.dress-code-image {
+  display: block;
+  width: 100%;
+  max-width: 480px;
+  height: auto;
+  margin: 0 auto 2rem;
+  border-radius: 10px;
+}
+
+.dress-code-text {
+  font-size: 1.1rem;
+  color: var(--text-light);
+  line-height: 2;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.dress-code-back {
+  text-align: center;
+  font-size: 1rem;
+}
