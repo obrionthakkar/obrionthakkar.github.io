@@ -436,6 +436,8 @@ h1, h2, h3 {
 }
 
 .login .btn-primary {
+  display: block;
+  margin: 0 auto;
   background: var(--text-dark);
 }
 
