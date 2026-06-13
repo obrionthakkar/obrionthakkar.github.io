@@ -43,36 +43,43 @@ document.querySelectorAll('a[href^="#"]:not(.nav-link-logout):not(.footer-logout
 
 // Navbar scroll behavior - show hamburger on mobile when navbar reaches top (sticky)
 let lastScrollTop = 0;
-window.addEventListener('scroll', () => {
+
+function updateNavbarForViewport() {
   const navToggle = document.getElementById('navToggle');
-  if (!navToggle) return;
-  
-  const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
-  
-  // Only on mobile
-  if (window.innerWidth <= 768) {
-    // Get the hero section to calculate when navbar reaches top
-    const hero = document.getElementById('home');
-    const navbar = document.getElementById('navbar');
-    
-    if (hero && navbar) {
-      const heroHeight = hero.offsetHeight;
-      const navbarRect = navbar.getBoundingClientRect();
-      
-      // Show hamburger only when navbar is actually at the top (sticky position)
-      // This happens when we've scrolled past the hero section and navbar is at top: 0
-      if (currentScroll >= heroHeight && navbarRect.top <= 0) {
-        navToggle.classList.add('show');
-      } else {
-        navToggle.classList.remove('show');
-      }
-    }
-  } else {
-    // Desktop - always hide (it's hidden via CSS anyway)
+  const navMenu = document.getElementById('navMenu');
+  const navbar = document.getElementById('navbar');
+  if (!navToggle || !navMenu) return;
+
+  if (window.innerWidth > 768) {
+    navMenu.classList.remove('active');
+    navToggle.classList.remove('active');
     navToggle.classList.remove('show');
+    return;
   }
-  
-  lastScrollTop = currentScroll;
+
+  const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+  const hero = document.getElementById('home');
+
+  if (hero && navbar) {
+    const heroHeight = hero.offsetHeight;
+    const navbarRect = navbar.getBoundingClientRect();
+
+    if (currentScroll >= heroHeight && navbarRect.top <= 0) {
+      navToggle.classList.add('show');
+    } else {
+      navToggle.classList.remove('show');
+    }
+  }
+}
+
+window.updateNavbarForViewport = updateNavbarForViewport;
+
+window.addEventListener('scroll', () => {
+  if (window.innerWidth <= 768) {
+    updateNavbarForViewport();
+  }
+
+  lastScrollTop = window.pageYOffset || document.documentElement.scrollTop;
 });
 
 // RSVP section removed - all RSVP-related code commented out
@@ -400,17 +407,15 @@ function keepModalWarm() {
 // Call heartbeat after a short delay to not block page load
 setTimeout(keepModalWarm, 2000);
   
-  // Ensure hamburger is hidden on initial load
-  const navToggle = document.getElementById('navToggle');
-  if (navToggle) {
-    navToggle.classList.remove('show');
-  }
+  // Ensure navbar matches current viewport
+  updateNavbarForViewport();
   
   // Wait for fonts to load, then adjust font size
   waitForFonts().then(() => {
     // Small delay to ensure layout is calculated
     setTimeout(() => {
       adjustHeroNamesFontSize();
+      updateNavbarForViewport();
     }, 100);
   });
   
@@ -420,15 +425,7 @@ setTimeout(keepModalWarm, 2000);
     clearTimeout(resizeTimeout);
     resizeTimeout = setTimeout(() => {
       adjustHeroNamesFontSize();
-      
-      // Update hamburger visibility on resize
-      if (navToggle) {
-        if (window.innerWidth <= 768 && window.pageYOffset <= 10) {
-          navToggle.classList.add('show');
-        } else {
-          navToggle.classList.remove('show');
-        }
-      }
+      updateNavbarForViewport();
     }, 150);
   });
 });

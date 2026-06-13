@@ -46,6 +46,10 @@ function showGuestSite() {
     guestSite.hidden = false;
     guestSite.removeAttribute('aria-hidden');
   }
+
+  if (typeof updateNavbarForViewport === 'function') {
+    requestAnimationFrame(() => updateNavbarForViewport());
+  }
 }
 
 function hideGuestSite() {

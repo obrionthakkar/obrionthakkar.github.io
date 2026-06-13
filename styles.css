@@ -135,6 +135,8 @@ h1, h2, h3 {
   justify-content: center;
   align-items: center;
   position: relative;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .nav-logo {
@@ -147,15 +149,20 @@ h1, h2, h3 {
 
 .nav-menu {
   display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
   list-style: none;
-  gap: 6rem;
+  gap: clamp(1rem, 2.5vw, 6rem);
+  row-gap: 0.75rem;
 }
 
 .nav-link {
   color: #001489;
   text-decoration: none;
   font-weight: 400;
-  font-size: 1.5rem;
+  font-size: clamp(0.85rem, 0.45rem + 0.9vw, 1.5rem);
+  white-space: nowrap;
   transition: var(--transition);
   position: relative;
 }
