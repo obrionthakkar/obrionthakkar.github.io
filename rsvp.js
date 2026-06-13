@@ -116,17 +116,24 @@ function setupRsvpEventListeners() {
         event.guests.forEach(guest => {
           const attendingInput = rsvpForm.querySelector(`input[name="attending_${event.eventId}_${guest.guestId}"]`);
           const mealInput = rsvpForm.querySelector(`input[name="meal_${event.eventId}_${guest.guestId}"]`);
+          const kidInput = rsvpForm.querySelector(`input[name="kid_${event.eventId}_${guest.guestId}"]`);
 
           if (attendingInput && attendingInput.value !== '') {
             const isAttending = attendingInput.value === 'true';
             const mealValue = mealInput && mealInput.value.trim() ? mealInput.value.trim() : null;
+            const kidValue = kidInput && kidInput.value.trim() ? kidInput.value.trim() : null;
 
-            submissions.push({
+            const submission = {
               guestId: guest.guestId,
               eventId: event.eventId,
               attending: isAttending,
               meal_choice: mealValue
-            });
+            };
+            if (guest.isChild) {
+              submission.kid_choice = kidValue;
+            }
+
+            submissions.push(submission);
           }
         });
       });
@@ -211,7 +218,7 @@ function resetSubmitButton() {
 function updatePartyDataFromSubmissions(submissions) {
   if (!currentPartyData) return;
 
-  submissions.forEach(({ guestId, eventId, attending, meal_choice }) => {
+  submissions.forEach(({ guestId, eventId, attending, meal_choice, kid_choice }) => {
     const event = currentPartyData.events.find(e => e.eventId === eventId);
     if (!event) return;
 
@@ -220,6 +227,9 @@ function updatePartyDataFromSubmissions(submissions) {
 
     guest.attending = attending ? 'Yes' : 'No';
     guest.meal = meal_choice || null;
+    if (guest.isChild) {
+      guest.kidChoice = kid_choice || null;
+    }
   });
 }
 
@@ -235,6 +245,7 @@ function setAttendingChoice(group, value) {
   const acceptBtn = group.querySelector('[data-choice="accept"]');
   const declineBtn = group.querySelector('[data-choice="decline"]');
   const mealInput = group.querySelector('input[name^="meal_"]');
+  const kidInput = group.querySelector('input[name^="kid_"]');
 
   hiddenInput.value = value;
   acceptBtn.classList.toggle('selected', value === 'true');
@@ -247,6 +258,14 @@ function setAttendingChoice(group, value) {
     mealInput.disabled = !isAttending;
     if (!isAttending) {
       mealInput.value = '';
+    }
+  }
+
+  if (kidInput) {
+    const isAttending = value === 'true';
+    kidInput.disabled = !isAttending;
+    if (!isAttending) {
+      kidInput.value = '';
     }
   }
 }
@@ -297,6 +316,16 @@ function buildRsvpForm(events) {
               value="${guest.meal || ''}"
               maxlength="200"
               ${!isAttending ? 'disabled' : ''}>
+            ${guest.isChild ? `
+            <label class="meal-label">For your littlest family members, would you like a high chair, stroller space, or something we haven't thought of?${guest.kidChoice ? ` <span class="meal-current">(Current: ${guest.kidChoice})</span>` : ''}</label>
+            <input type="text"
+              name="kid_${event.eventId}_${guest.guestId}"
+              class="meal-input"
+              placeholder="e.g. high chair, stroller space"
+              value="${guest.kidChoice || ''}"
+              maxlength="200"
+              ${!isAttending ? 'disabled' : ''}>
+            ` : ''}
           ` : ''}
         </div>
       `;

@@ -238,8 +238,10 @@ def do_lookup(name: str):
             event_block["guests"].append({
                 "guestId": g["id"],
                 "name": g["fields"]["display_name"],
+                "isChild": bool(g["fields"].get("is_child")),
                 "attending": rsvp["fields"].get("attending") if rsvp else None,
-                "meal": rsvp["fields"].get("meal_choice") if rsvp else None
+                "meal": rsvp["fields"].get("meal_choice") if rsvp else None,
+                "kidChoice": rsvp["fields"].get("kid_choice") if rsvp else None
             })
 
         response["events"].append(event_block)
@@ -254,6 +256,7 @@ def do_submit_rsvp(payload: dict):
     event_id = payload.get("eventId")
     attending = payload.get("attending")
     meal_choice = payload.get("meal_choice")
+    kid_choice = payload.get("kid_choice")
 
     if not guest_id or not event_id:
         return {"error": "guestId and eventId required"}
@@ -267,18 +270,21 @@ def do_submit_rsvp(payload: dict):
     existing_rsvps = airtable_get(base, "RSVPs", rsvp_formula)
 
     attending_str = "Yes" if attending else "No"
+    fields = {"attending": attending_str, "meal_choice": meal_choice}
+    if "kid_choice" in payload:
+        fields["kid_choice"] = kid_choice
 
     if existing_rsvps:
         rsvp_id = existing_rsvps[0]["id"]
         url = f"{AIRTABLE_URL}/{base}/RSVPs/{rsvp_id}"
-        data = {"fields": {"attending": attending_str, "meal_choice": meal_choice}}
+        data = {"fields": fields}
         r = requests.patch(url, headers={"Authorization": f"Bearer {os.environ['AIRTABLE_TOKEN']}", "Content-Type": "application/json"}, json=data)
         r.raise_for_status()
         _cache.clear()
         return {"status": "updated"}
 
     url = f"{AIRTABLE_URL}/{base}/RSVPs"
-    data = {"fields": {"guest": [guest_id], "event": [event_id], "attending": attending_str, "meal_choice": meal_choice}}
+    data = {"fields": {"guest": [guest_id], "event": [event_id], **fields}}
     r = requests.post(url, headers={"Authorization": f"Bearer {os.environ['AIRTABLE_TOKEN']}", "Content-Type": "application/json"}, json=data)
     r.raise_for_status()
     _cache.clear()
