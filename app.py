@@ -98,7 +98,7 @@ def do_lookup(name: str):
         )
 
         if guests_partial:
-            return {"error": "RSVP not found - please enter your full name. In case of issues, contact us at obrionthakkar@gmail.com"}
+            return {"error": "We couldn't find your invitation - please enter your full name. In case of issues, contact us at obrionthakkar@gmail.com and we will help you out."}
 
         return {"error": "party not found"}
 
