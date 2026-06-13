@@ -1258,3 +1258,17 @@ h1, h2, h3 {
   text-align: center;
   margin-bottom: 2rem;
 }
+
+.dress-code-list {
+  max-width: 560px;
+  margin: 0 auto 2rem;
+  padding-left: 1.25rem;
+  font-size: 1.1rem;
+  color: var(--text-light);
+  line-height: 2;
+  text-align: left;
+}
+
+.dress-code-list li {
+  margin-bottom: 0.5rem;
+}
