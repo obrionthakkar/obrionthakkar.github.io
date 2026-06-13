@@ -1230,7 +1230,7 @@ h1, h2, h3 {
 }
 
 .dress-code-content {
-  max-width: 640px;
+  max-width: 680px;
   margin: 0 auto;
 }
 
@@ -1238,13 +1238,13 @@ h1, h2, h3 {
 .dress-code-image {
   display: block;
   width: auto;
-  max-width: 480px;
+  max-width: 560px;
   height: auto;
   margin: 0 auto 2rem;
   border-radius: 10px;
 }
 
-@media (max-width: 520px) {
+@media (max-width: 600px) {
   .dress-code-content img,
   .dress-code-image {
     max-width: 100%;
