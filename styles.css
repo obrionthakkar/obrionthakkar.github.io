@@ -942,7 +942,7 @@ h1, h2, h3 {
 }
 
 .lookup-form {
-  background: var(--bg-light);
+  background: var(--bg-white);
   padding: 2.5rem;
   border-radius: 10px;
   box-shadow: var(--shadow);
