@@ -542,7 +542,7 @@ h1, h2, h3 {
 /* Events Section */
 .events {
   padding: 80px 0;
-  background: var(--bg-light);
+  background: var(--bg-white);
 }
 
 .events-grid {
