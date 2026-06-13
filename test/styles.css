@@ -612,6 +612,39 @@ h1, h2, h3 {
   margin-top: 2rem;
 }
 
+/* FAQ Section */
+.faq {
+  padding: 80px 0;
+  background: var(--bg-white);
+}
+
+.faq-list {
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.faq-item {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.faq-item:last-child {
+  margin-bottom: 0;
+}
+
+.faq-question {
+  font-size: 1.3rem;
+  color: var(--text-dark);
+  margin-bottom: 0.75rem;
+}
+
+.faq-answer {
+  font-size: 1.1rem;
+  color: var(--text-light);
+  line-height: 2;
+  margin: 0;
+}
+
 .event-card--welcome {
   border: 2px solid var(--primary-color);
 }
@@ -830,6 +863,7 @@ h1, h2, h3 {
 
   .story,
   .events,
+  .faq,
   .photos,
   .rsvp {
     padding: 60px 0;
