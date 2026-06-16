@@ -11,10 +11,10 @@ const RSVP_EVENT_ORDER = [
 ];
 
 const RSVP_EVENT_TITLES = {
-  recOdVBnTvKEqomRb: "Carrington's Mehendi, September 9",
-  recH9PaR5e5vxi6AM: 'Rehearsal, September 10',
-  recsdp2OAZauKrGFf: 'Mehendi Celebration, September 10',
-  rec1xtXaKkk48vZmD: 'Ceremony & Reception, September 11'
+  recOdVBnTvKEqomRb: "Carrington's Mehendi, September 10",
+  recH9PaR5e5vxi6AM: 'Rehearsal, September 11',
+  recsdp2OAZauKrGFf: 'Mehendi Celebration, September 11',
+  rec1xtXaKkk48vZmD: 'Ceremony & Reception, September 12'
 };
 
 function getRsvpEventTitle(event) {
