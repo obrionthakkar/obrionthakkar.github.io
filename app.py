@@ -7,6 +7,7 @@ from pathlib import Path
 
 import fastapi
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 
 app = modal.App("wedding-rsvp")
@@ -57,9 +58,13 @@ def normalize_guest_name(name: str) -> str:
     return name.strip()
 
 
-def escape_airtable_string(value: str) -> str:
-    """Escape single quotes for Airtable filterByFormula string literals."""
-    return value.replace("'", "''")
+def airtable_string_literal(value: str) -> str:
+    """Format a value as an Airtable formula string literal."""
+    if '"' not in value:
+        return f'"{value}"'
+    if "'" not in value:
+        return f"'{value}'"
+    return "'" + value.replace("'", "''") + "'"
 
 
 def airtable_get(base, table, formula, use_cache=True):
@@ -74,7 +79,11 @@ def airtable_get(base, table, formula, use_cache=True):
     }
     params = {"filterByFormula": formula}
     r = requests.get(url, headers=headers, params=params)
-    r.raise_for_status()
+    if not r.ok:
+        raise requests.HTTPError(
+            f"Airtable error {r.status_code} for {table}: {r.text}",
+            response=r,
+        )
     records = r.json()["records"]
 
     if use_cache:
@@ -94,18 +103,18 @@ def do_lookup(name: str):
 
     base = os.environ["AIRTABLE_BASE"]
 
-    name_lower = escape_airtable_string(name.lower())
+    name_literal = airtable_string_literal(name.lower())
     guests = airtable_get(
         base,
         "Guests",
-        f"LOWER({{display_name}}) = '{name_lower}'"
+        f"LOWER({{display_name}}) = {name_literal}"
     )
 
     if not guests:
         guests_partial = airtable_get(
             base,
             "Guests",
-            f"FIND('{name_lower}', LOWER({{display_name}}))",
+            f"FIND({name_literal}, LOWER({{display_name}}))",
             use_cache=False
         )
 
@@ -320,12 +329,23 @@ web_app.add_middleware(
 
 @web_app.get("/lookup")
 def lookup(name: str):
-    return do_lookup(name)
+    try:
+        return do_lookup(name)
+    except requests.HTTPError:
+        return JSONResponse(
+            status_code=502,
+            content={"error": "lookup temporarily unavailable. Please try again or email obrionthakkar@gmail.com"},
+        )
+    except Exception:
+        return JSONResponse(
+            status_code=500,
+            content={"error": "lookup failed. Please try again or email obrionthakkar@gmail.com"},
+        )
 
 
 @web_app.get("/api/lookup")
 def lookup_api(name: str):
-    return do_lookup(name)
+    return lookup(name)
 
 
 @web_app.post("/submit-rsvp")
