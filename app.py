@@ -50,6 +50,18 @@ def _is_cache_valid(cache_entry):
     return time.time() - cache_entry["timestamp"] < _cache_ttl
 
 
+def normalize_guest_name(name: str) -> str:
+    """Normalize smart apostrophes and trim whitespace for lookup."""
+    for ch in ("\u2019", "\u2018", "\u0060", "\u00b4"):
+        name = name.replace(ch, "'")
+    return name.strip()
+
+
+def escape_airtable_string(value: str) -> str:
+    """Escape single quotes for Airtable filterByFormula string literals."""
+    return value.replace("'", "''")
+
+
 def airtable_get(base, table, formula, use_cache=True):
     if use_cache:
         cache_key = _get_cache_key(base, table, formula)
@@ -76,13 +88,13 @@ def airtable_get(base, table, formula, use_cache=True):
 
 
 def do_lookup(name: str):
-    name = name.strip()
+    name = normalize_guest_name(name)
     if not name:
         return {"error": "missing name"}
 
     base = os.environ["AIRTABLE_BASE"]
 
-    name_lower = name.lower()
+    name_lower = escape_airtable_string(name.lower())
     guests = airtable_get(
         base,
         "Guests",
