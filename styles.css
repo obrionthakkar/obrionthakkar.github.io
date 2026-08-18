@@ -1081,18 +1081,24 @@ h1, h2, h3 {
   color: var(--rsvp-decline-color);
 }
 
-.rsvp-choice-btn:hover {
+.rsvp-choice-btn:hover:not(:disabled) {
   opacity: 0.85;
 }
 
-.rsvp-choice-btn[data-choice="accept"]:hover {
+.rsvp-choice-btn[data-choice="accept"]:hover:not(:disabled) {
   border-color: var(--text-dark);
   background: rgba(0, 20, 137, 0.08);
 }
 
-.rsvp-choice-btn[data-choice="decline"]:hover {
+.rsvp-choice-btn[data-choice="decline"]:hover:not(:disabled) {
   border-color: var(--rsvp-decline-color);
   background: rgba(200, 117, 111, 0.12);
+}
+
+.rsvp-choice-btn:disabled {
+  cursor: default;
+  pointer-events: none;
+  opacity: 1;
 }
 
 .rsvp-choice-btn.selected[data-choice="accept"] {
@@ -1154,6 +1160,13 @@ h1, h2, h3 {
 .guest-form-group input[type="text"][name^="meal_"]:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+.guest-form-group input.meal-input[readonly],
+.guest-form-group input[type="text"][name^="meal_"][readonly] {
+  pointer-events: none;
+  cursor: default;
+  background: var(--bg-white);
 }
 
 .form-actions {

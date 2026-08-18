@@ -1,5 +1,6 @@
 // RSVP System — form only (login handled by auth.js)
 
+const RSVP_CLOSED = true;
 const WEDDING_EVENT_ID = 'rec1xtXaKkk48vZmD';
 
 // RSVP display order (matches Events page)
@@ -57,6 +58,16 @@ function initRSVP() {
 
   if (!rsvpForm) return;
 
+  if (RSVP_CLOSED) {
+    const formActions = rsvpForm.querySelector('.form-actions');
+    if (formActions) formActions.style.display = 'none';
+    rsvpForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+    });
+    return;
+  }
+
   setupRsvpEventListeners();
 }
 
@@ -82,7 +93,9 @@ function initRsvpFromPartyData(data) {
     statusMessage.style.color = 'var(--text-light)';
     statusMessage.style.marginTop = '0.5rem';
     statusMessage.style.fontSize = '0.9rem';
-    statusMessage.textContent = 'Your existing RSVPs are shown below. You can update them at any time.';
+    statusMessage.textContent = RSVP_CLOSED
+      ? 'Your existing RSVPs are shown below.'
+      : 'Your existing RSVPs are shown below. You can update them at any time.';
     partyInfo.appendChild(statusMessage);
   }
 
@@ -302,8 +315,8 @@ function buildRsvpForm(events) {
           <div class="guest-rsvp-row">
             <span class="guest-name">${guest.name}</span>
             <div class="rsvp-choice-group" role="group" aria-label="RSVP for ${guest.name}">
-              <button type="button" class="rsvp-choice-btn" data-choice="accept" aria-pressed="${isAttending ? 'true' : 'false'}">Accept</button>
-              <button type="button" class="rsvp-choice-btn" data-choice="decline" aria-pressed="${isNotAttending ? 'true' : 'false'}">Decline</button>
+              <button type="button" class="rsvp-choice-btn" data-choice="accept" aria-pressed="${isAttending ? 'true' : 'false'}"${RSVP_CLOSED ? ' disabled' : ''}>Accept</button>
+              <button type="button" class="rsvp-choice-btn" data-choice="decline" aria-pressed="${isNotAttending ? 'true' : 'false'}"${RSVP_CLOSED ? ' disabled' : ''}>Decline</button>
             </div>
           </div>
           <input type="hidden" name="${fieldName}" value="${initialValue}">
@@ -315,7 +328,7 @@ function buildRsvpForm(events) {
               placeholder="e.g. vegetarian, nut allergy, or kid's meal"
               value="${guest.meal || ''}"
               maxlength="200"
-              ${!isAttending ? 'disabled' : ''}>
+              ${RSVP_CLOSED ? 'readonly tabindex="-1"' : (!isAttending ? 'disabled' : '')}>
             ${guest.isChild ? `
             <label class="meal-label">For your littlest family members, would you like a high chair, stroller space, or something we haven't thought of?${guest.kidChoice ? ` <span class="meal-current">(Current: ${guest.kidChoice})</span>` : ''}</label>
             <input type="text"
@@ -324,7 +337,7 @@ function buildRsvpForm(events) {
               placeholder="e.g. high chair, stroller space"
               value="${guest.kidChoice || ''}"
               maxlength="200"
-              ${!isAttending ? 'disabled' : ''}>
+              ${RSVP_CLOSED ? 'readonly tabindex="-1"' : (!isAttending ? 'disabled' : '')}>
             ` : ''}
           ` : ''}
         </div>
@@ -343,7 +356,9 @@ function buildRsvpForm(events) {
       }
     });
 
-    setupAttendingToggles(eventGroup, event);
+    if (!RSVP_CLOSED) {
+      setupAttendingToggles(eventGroup, event);
+    }
     eventsFormContainer.appendChild(eventGroup);
   });
 }
